@@ -1,17 +1,28 @@
-import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { Button, FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput, TextField, Typography } from '@mui/material';
-import { useMediaQuery } from '@mui/material';
-import Paper from '@mui/material/Paper';
-import axios from 'axios';
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import {
+  Button,
+  FormControl,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  OutlinedInput,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { useMediaQuery } from "@mui/material";
+import Paper from "@mui/material/Paper";
+import axios from "axios";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {
   const navigate = useNavigate();
 
-  const isSmallScreen = useMediaQuery('(max-width:600px)');
-  const isMediumScreen = useMediaQuery('(min-width:600px) and (max-width:960px)');
-  const isLargeScreen = useMediaQuery('(min-width:960px)');
+  const isSmallScreen = useMediaQuery("(max-width:600px)");
+  const isMediumScreen = useMediaQuery(
+    "(min-width:600px) and (max-width:960px)"
+  );
+  const isLargeScreen = useMediaQuery("(min-width:960px)");
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -21,80 +32,104 @@ const SignUp = () => {
     event.preventDefault();
   };
 
-  const [inputs, setInputs] = useState({ Username: '', Email: '', Password: '', CPassword: '' });
+  const [inputs, setInputs] = useState({
+    Username: "",
+    Email: "",
+    Password: "",
+    CPassword: "",
+  });
 
   const inputHandler = (e) => {
     setInputs({ ...inputs, [e.target.name]: e.target.value });
-    console.log(inputs);
   };
 
   const signupHandler = () => {
     if (inputs.Password === inputs.CPassword) {
-      const finalinputs = { Username: inputs.Username, Email: inputs.Email, Password: inputs.Password };
-      console.log(finalinputs);
-      axios.post("http://localhost:1880/add_user", finalinputs)
+      const finalinputs = {
+        username: inputs.Username,
+        email: inputs.Email,
+        password: inputs.Password,
+      };
+
+      axios
+        .post("http://localhost:3000/pfm/user/signup", finalinputs)
         .then((res) => {
-          console.log(res);
-          if (res.data.message === 'This email already exists') {
-            alert(res.data.message);
-            navigate('/signup');
+          // console.log(res);
+          if (res.data.msg === "Email already taken") {
+            alert(res.data.msg);
+            navigate("/signup");
           } else {
-            alert(res.data.message);
-            navigate('/');
+            localStorage.setItem("token", res.data.token);
+            alert(res.data.msg);
+            navigate("/");
           }
         })
         .catch((err) => {
           console.log(err);
         });
     } else {
-      alert('Passwords do not match, try again');
+      alert("Passwords do not match, try again");
     }
   };
 
   return (
-    <div style={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      height: '100vh',
-      padding: '1rem',
-    }}>
-      <div style={{
-        textAlign: 'center',
-        width: isSmallScreen ? '100%' : isMediumScreen ? '75%' : '50%',
-        maxWidth: '500px',
-      }}>
-        <Paper sx={{
-          backgroundColor: '#dcdcdc',
-          margin: '2rem 1rem',
-          padding: '2rem',
-        }} elevation={15}>
-          <Typography variant={isSmallScreen ? 'h4' : 'h3'} style={{ fontFamily: 'times', visibility: 'visible' }}>Sign Up</Typography>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+        padding: "1rem",
+      }}
+    >
+      <div
+        style={{
+          textAlign: "center",
+          width: isSmallScreen ? "100%" : isMediumScreen ? "75%" : "50%",
+          maxWidth: "500px",
+        }}
+      >
+        <Paper
+          sx={{
+            backgroundColor: "#dcdcdc",
+            margin: "2rem 1rem",
+            padding: "2rem",
+          }}
+          elevation={15}
+        >
+          <Typography
+            variant={isSmallScreen ? "h4" : "h3"}
+            style={{ fontFamily: "times", visibility: "visible" }}
+          >
+            Sign Up
+          </Typography>
           <br />
           <TextField
-            variant='outlined'
-            label='Username'
+            variant="outlined"
+            label="Username"
             onChange={inputHandler}
-            name='Username'
+            name="Username"
             value={inputs.Username}
-            sx={{ m: 1, width: '100%' }}
+            sx={{ m: 1, width: "100%" }}
           />
           <br />
           <TextField
-            variant='outlined'
-            label='Email'
+            variant="outlined"
+            label="Email"
             onChange={inputHandler}
-            name='Email'
+            name="Email"
             value={inputs.Email}
-            sx={{ m: 1, width: '100%' }}
+            sx={{ m: 1, width: "100%" }}
           />
           <br />
-          <FormControl sx={{ m: 1, width: '100%' }} variant="outlined">
-            <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+          <FormControl sx={{ m: 1, width: "100%" }} variant="outlined">
+            <InputLabel htmlFor="outlined-adornment-password">
+              Password
+            </InputLabel>
             <OutlinedInput
               id="outlined-adornment-password"
-              type={showPassword ? 'text' : 'password'}
-              name='Password'
+              type={showPassword ? "text" : "password"}
+              name="Password"
               onChange={inputHandler}
               endAdornment={
                 <InputAdornment position="end">
@@ -112,12 +147,14 @@ const SignUp = () => {
             />
           </FormControl>
           <br />
-          <FormControl sx={{ m: 1, width: '100%' }} variant="outlined">
-            <InputLabel htmlFor="outlined-adornment-confirmpassword">Confirm Password</InputLabel>
+          <FormControl sx={{ m: 1, width: "100%" }} variant="outlined">
+            <InputLabel htmlFor="outlined-adornment-confirmpassword">
+              Confirm Password
+            </InputLabel>
             <OutlinedInput
               id="outlined-adornment-confirmpassword"
-              type={showPassword ? 'text' : 'password'}
-              name='CPassword'
+              type={showPassword ? "text" : "password"}
+              name="CPassword"
               onChange={inputHandler}
               endAdornment={
                 <InputAdornment position="end">
@@ -136,16 +173,16 @@ const SignUp = () => {
           </FormControl>
           <br />
           <Button
-            variant='contained'
+            variant="contained"
             onClick={signupHandler}
             style={{
-              backgroundColor: '#183e4b',
-              fontFamily: 'times',
-              borderRadius: '2rem',
-              marginBottom: '5%',
-              width: '50%',
-              padding: isSmallScreen ? '0.5rem' : '0.75rem',
-              fontSize: isSmallScreen ? '0.875rem' : '1rem'
+              backgroundColor: "#183e4b",
+              fontFamily: "times",
+              borderRadius: "2rem",
+              marginBottom: "5%",
+              width: "50%",
+              padding: isSmallScreen ? "0.5rem" : "0.75rem",
+              fontSize: isSmallScreen ? "0.875rem" : "1rem",
             }}
           >
             Sign Up

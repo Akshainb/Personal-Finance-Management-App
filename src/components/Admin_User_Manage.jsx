@@ -25,8 +25,11 @@ const Admin_User_Manage = () => {
         },
       })
       .then((res) => {
-        console.log(res);
-        setUserData(res.data.user);
+        const filteredUsers = res.data.user.filter(
+          (user) => user.email !== "nistel@gmail.com"
+        );
+
+        setUserData(filteredUsers);
       })
       .catch((err) => {
         console.log(err);
